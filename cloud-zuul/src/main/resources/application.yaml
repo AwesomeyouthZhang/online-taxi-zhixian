@@ -1,0 +1,16 @@
+# 应用名称
+spring:
+  application:
+    name: cloud-zuul
+# 应用服务 WEB 访问端口
+server:
+  port: 9100
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7900/eureka/
+  instance:
+    hostname: localhost
+    instance-id: cloud-zuul
+
+

@@ -1,0 +1,11 @@
+server:
+  port: 8080
+spring:
+  application:
+    name: api-passenger
+eureka:
+  client:
+    register-with-eureka: true
+    registry-fetch-interval-seconds: 30
+    service-url:
+      defaultZone: http://localhost:7900/eureka/

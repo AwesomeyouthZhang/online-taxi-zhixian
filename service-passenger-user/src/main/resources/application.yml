@@ -1,0 +1,15 @@
+# 应用名称
+spring:
+  application:
+    name: service-passenger-user
+server:
+  port: 8013
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:7900/eureka/
+    registry-fetch-interval-seconds: 30
+    enabled: true
+    #,http://localhost:7901/eureka/,http://localhost:7902/eureka/
+  instance:
+    lease-renewal-interval-in-seconds: 30

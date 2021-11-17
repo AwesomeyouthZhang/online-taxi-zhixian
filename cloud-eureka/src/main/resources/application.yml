@@ -1,0 +1,46 @@
+
+spring:
+  application:
+    name: eureka
+#  register-with-eureka：是否注册到eureka服务中
+#  fetch-registry：是否拉取其他的服务
+eureka:
+  client:
+    register-with-eureka: false
+    fetch-registry: false
+    service-url:
+      defaultZone: http://localhost:7900/eureka/,http://localhost:7901/eureka/,http://localhost:7902/eureka/
+
+---
+spring:
+  server:
+    port: 7900
+  config:
+    activate:
+      on-profile: 7900
+
+eureka:
+  instance:
+    hostname:
+
+---
+spring:
+  profiles:
+    active: 7901
+  server:
+    port: 7901
+
+eureka:
+  instance:
+    hostname: eureka-7901
+
+---
+spring:
+  server:
+    port: 7902
+  config:
+    activate:
+      on-profile: 7902
+eureka:
+  instance:
+    hostname: eureka-7902
