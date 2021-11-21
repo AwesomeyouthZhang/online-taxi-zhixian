@@ -1,4 +1,11 @@
-package com.zhixian.apipassenger.Dao;
+package com.zhixian.servicesms.dao;
 
-public interface ServiceSmsTemplateCustomDao {
+import com.zhixian.servicesms.entity.ServiceSmsTemplate;
+import org.apache.ibatis.annotations.Mapper;
+import org.springframework.stereotype.Component;
+
+@Component
+@Mapper
+public interface ServiceSmsTemplateCustomDao extends ServiceSmsTemplateDao{
+    ServiceSmsTemplate selectByTemplateId(String templateId);
 }
