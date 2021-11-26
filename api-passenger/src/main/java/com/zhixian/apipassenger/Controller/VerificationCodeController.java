@@ -34,7 +34,7 @@ public class VerificationCodeController{
     })
     @PostMapping("/send")
     public ResponseResult sendVerificationCode(@RequestBody @Validated ShortMessageRequest shortMessage){
-        return verificationCodeService.send();
+        return verificationCodeService.send(shortMessage.getPhoneNumber());
 
     }
 
