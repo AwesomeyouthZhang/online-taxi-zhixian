@@ -1,10 +1,12 @@
 package com.zhixian.internalcommon.dto.servicesms;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.util.Map;
 
 @Data
+@Builder
 public class SmsTemplateDto {
     private String id;
     // 参数  占位符

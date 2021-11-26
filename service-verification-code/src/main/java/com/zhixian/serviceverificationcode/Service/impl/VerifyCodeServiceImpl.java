@@ -13,16 +13,19 @@ import org.apache.commons.lang.SystemUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundValueOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
 @Service
-
+@SuppressWarnings("all")
 public class VerifyCodeServiceImpl implements VerifyCodeService {
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<String, String> redisTemplate1;
+    @Autowired
+    RedisTemplate redisTemplate;
 
     @Override
     public ResponseResult<VerifyCodeService> generate(int identity, String phoneNumber) {
@@ -91,8 +94,8 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 
         String keyPre = generateKeyByIdentity(identity);
         String key = keyPre + phoneNumber;
-        BoundValueOperations<String, String> codeRedis = redisTemplate.boundValueOps(key);
-        String redisCode = codeRedis.get();
+        String redisCode = (String) redisTemplate.opsForValue().get(key);
+
         if (StringUtils.isNotBlank(code)
         && StringUtils.isNotBlank(redisCode)
         && code.trim().equals(redisCode.trim())){
@@ -151,30 +154,36 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
                     .oneHourLimitation(false)
                     .oneMinLimitation(false)
                     .build();
+            StringRedisSerializer stringRedisSerializer = new StringRedisSerializer();
+
             redisTemplate.opsForValue().set(redisLimitationKey,
-                    String.valueOf(verifyCodeLease),
+                    verifyCodeLease,
                     RedisKeyExpirationConstant.CODE_EXPIRE_TIME_TEN_MINUTES.getDuration(),
                     RedisKeyExpirationConstant.CODE_EXPIRE_TIME_TEN_MINUTES.getTimeUnit());
             return null;
 
         }else{
             //非首次
-            if(verifyCodeLease.getCodeTimes() == 3
-            &&((currentTimeMillis - verifyCodeLease.getCodeTimes()) / (1000 * 60) <= 1)){
+         //   System.out.println((currentTimeMillis - verifyCodeLease.()));
+           System.out.println((currentTimeMillis - verifyCodeLease.getFistCodeTime()) / (1000 * 60));
+
+            System.out.println(((currentTimeMillis - verifyCodeLease.getFistCodeTime()) / (1000 * 60 * 60)));
+            if(verifyCodeLease.getCodeTimes() >= 3
+            &&((currentTimeMillis - verifyCodeLease.getFistCodeTime()) / (1000 * 60) <= 1)){
                 verifyCodeLease.setOneMinLimitation(true);
                 redisTemplate.opsForValue().set(redisLimitationKey,
-                        String.valueOf(verifyCodeLease),
+                        verifyCodeLease,
                         RedisKeyExpirationConstant.CODE_EXPIRE_TIME_TEN_MINUTES.getDuration(),
                         RedisKeyExpirationConstant.CODE_EXPIRE_TIME_TEN_MINUTES.getTimeUnit());
                 return "1分钟法发了三次，限制5分钟不能再发";
 
             }
 
-            if(verifyCodeLease.getCodeTimes() == 10
-            &&((currentTimeMillis - (verifyCodeLease.getCodeTimes()) / (10000 * 60 * 60) <= 10))){
+            if(verifyCodeLease.getCodeTimes() >= 10
+            &&((currentTimeMillis - verifyCodeLease.getFistCodeTime()) / (1000 * 60 * 60) <= 10)){
                 verifyCodeLease.setOneHourLimitation(true);
                 redisTemplate.opsForValue().set(redisLimitationKey,
-                        String.valueOf(verifyCodeLease),
+                        verifyCodeLease,
                         RedisKeyExpirationConstant.CODE_EXPIRE_TIME_ONE_HOUR.getDuration(),
                         RedisKeyExpirationConstant.CODE_EXPIRE_TIME_ONE_HOUR.getTimeUnit());
                 return "10分钟发了10次，限制24小时不能在发短息";
@@ -186,7 +195,7 @@ public class VerifyCodeServiceImpl implements VerifyCodeService {
 
             }
             redisTemplate.opsForValue().set(redisLimitationKey,
-                    String.valueOf(verifyCodeLease),
+                    verifyCodeLease,
                     RedisKeyExpirationConstant.CODE_EXPIRE_TIME_TEN_MINUTES.getDuration(),
                     RedisKeyExpirationConstant.CODE_EXPIRE_TIME_TEN_MINUTES.getTimeUnit());
             return null;

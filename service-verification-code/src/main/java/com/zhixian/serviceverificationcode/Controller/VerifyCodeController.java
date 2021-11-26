@@ -19,11 +19,11 @@ public class VerifyCodeController {
     VerifyCodeService verifyCodeService;
     @ApiOperation(value = "根据手机号验证码生成")
     @GetMapping("/generate/{identity}/{phoneNumber}")
-    public ResponseResult generate(@PathVariable("identity") int identity, @PathVariable("phoneNumber") int phoneNumber) {
+    public ResponseResult generate(@PathVariable("identity") int identity, @PathVariable("phoneNumber") String phoneNumber) {
 //        日志落地
         log.info("/generate/{identity}/{phoneNumber} ： 身份类型：" + identity + ",手机号：" + phoneNumber);
 
-        return verifyCodeService.generate(identity,String.valueOf(phoneNumber));
+        return verifyCodeService.generate(identity,phoneNumber);
 
     }
 
@@ -39,4 +39,6 @@ public class VerifyCodeController {
 
         return verifyCodeService.verify(identity, phoneNumber, code);
     }
+
+
 }
