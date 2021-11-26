@@ -3,6 +3,8 @@ server:
 spring:
   application:
     name: service-sms
+
+
   #数据库连接配置
   datasource:
     #配置当前使用的数据源的操作类型
@@ -39,4 +41,7 @@ eureka:
 mybatis:
   mapper-locations:
     - classpath:mapper/*.xml
+  configuration:
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 

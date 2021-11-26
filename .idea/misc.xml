@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
+  <component name="ExcludeFromValidation">
+    <file url="file://$PROJECT_DIR$/service-verification-code/src/main/java/com/zhixian/serviceverificationcode/Service/impl/VerifyCodeServiceImpl.java" />
+  </component>
   <component name="ExternalStorageConfigurationManager" enabled="true" />
   <component name="FrameworkDetectionExcludesConfiguration">
     <file type="Spring" url="file://$PROJECT_DIR$/cloud-eureka" />
